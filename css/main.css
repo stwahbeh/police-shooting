@@ -1,4 +1,28 @@
 /* You'll probably want to add some styles here */
+@import url(https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css);
+@import url(https://fonts.googleapis.com/css?family=Raleway:400,300);
+@import url(https://fonts.googleapis.com/css?family=Lato:300italic,400,400italic,300);
+
+
+#headline {
+    text-align:left;
+    
+}
+
+body {
+    background-color:grey
+}
+
 #container {
 	height:800px;
 }
+
+@media screen and (min-width: 768px ) {
+    #headline {
+        text-align:center;
+    }
+
+    }
+
+
+
