@@ -2,7 +2,7 @@
 var drawMap = function() {
 
   // Create map and set view
-var map = L.map('container').setView([latitude, longitude], zoom)
+var map = L.map('container').setView([43,-95],4);
 
   // Create a tile layer variable using the appropriate url
 var layer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png')
@@ -24,6 +24,7 @@ $.ajax({
      type: "get",
      success:function(dat) {
        data = dat
+        customBuild(map,data);
        // Do something with your data!
      }, 
      dataType:"json"
@@ -36,7 +37,23 @@ $.ajax({
 // Loop through your data and add the appropriate layers and points
 var customBuild = function(map, data) {
 	// Be sure to add each layer to the map
+  data.map(function(p)){
+      if (p['Hit or Killed?'] == "Killed" ) {
+        var circle = new L.circleMarker([$('lat'), $('lng')], {color:'red'}).addTo(map)
+      } else {
+        var circle = new L.circleMarker([$('lat'), $('lng')], {color:'black'}).addTo(map)
+      }
+    circle.addTo(layer)
+    circle.bindPopup(text)
+    
+  }
 
+  var baseMaps = {
+    "Grayscale": grayscale,
+    "Streets": streets
+  };
+
+  L.control.layers(null,layers).addTo(map);
 	// Once layers are on the map, add a leaflet controller that shows/hides layers
   
 }
