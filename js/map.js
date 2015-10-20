@@ -43,42 +43,44 @@ var customBuild = function(map, data) {
     
     if (p.Race == undefined){
       race = "unidentified";
-      console.log(race + "1");
+      //console.log(race + "1");
     } else {
       race = p.Race;
-      console.log(race);
+      //console.log(race);
     }
       if($.inArray(race, layers) != race){  
-         console.log(race + "2");       
+         //console.log(race + "2");       
          layers.push(race);         
          groups.push(new L.LayerGroup([]))
          
       }
-      var index = layers.indexOf("race");
-      console.log(index);
+      var index = $.inArray(race, layers);
+      //console.log(index);
       if (p['Hit or Killed?'] == "Killed" ) {
-        console.log(p['Hit or Killed?']);
-        console.log(race + "3");
+        //console.log(p['Hit or Killed?']);
+        //console.log(race + "3");
         var circle = new L.circleMarker ([p.lat, p.lng], 200, {color: 'red', color:'red'})
         circle.addTo(groups[index])
-        console.log(race + "3");
+        //console.log(race + "3");
     } else {
-        console.log(race + "4");
+        //console.log(race + "4");
         var circle = new L.circleMarker ([p.lat, p.lng] , 200, {color: 'black', color:'black'})
-        circle.addTo(groups[index])
-        console.log(race + "4");
+        circle.addTo(groups[index])                                                                                                                                                                     
+        //console.log(race + "4");
       }
 
     var summary = p.Summary;
     var link = p['Source Link']; 
     circle.bindPopup(summary + link);  
 
-    L.control.layers (groups).addTo(map) 
+    
 
 
   //L.control.layers(null,layers).addTo(map);
 	// Once layers are on the map, add a leaflet controller that shows/hides layers
   
 })
+
+L.control.layers (groups).addTo(map) 
 }
 
