@@ -36,51 +36,81 @@ $.ajax({
 // Loop through your data and add the appropriate layers and points
 var customBuild = function(map, data) {
 	// Be sure to add each layer to the   map
-  var layers = [];
-  var race = '';
-  var groups = [];
+  var layers = [],
+      race = '',
+      groups = [],
+      white = 0,
+      nonWhite = 0,
+      wMen = 0,
+      wWomen = 0,
+      nMen = 0,
+      nWomen = 0;
   data.map(function(p){
-    
-    if (p.Race == undefined){
-      race = "unidentified";
-      //console.log(race + "1");
+   
+    if (p.Race == undefined || p.Race == "Unknown"){
+      race = "Unidentified";
+      
     } else {
-      race = p.Race;
-      //console.log(race);
+      race = p.Race;      
     }
-      if($.inArray(race, layers) != race){  
-         //console.log(race + "2");       
-         layers.push(race);         
-         groups.push(new L.LayerGroup([]))
-         
+    if (p.Race == "White"){
+      white++;
+      if (p["Victim's Gender"] == "Male") {
+        wMen++;
+      } else {
+        wWomen++;
       }
-      var index = $.inArray(race, layers);
-      //console.log(index);
-      if (p['Hit or Killed?'] == "Killed" ) {
-        //console.log(p['Hit or Killed?']);
-        //console.log(race + "3");
-        var circle = new L.circleMarker ([p.lat, p.lng], 200, {color: 'red', color:'red'})
-        circle.addTo(groups[index])
-        //console.log(race + "3");
     } else {
-        //console.log(race + "4");
-        var circle = new L.circleMarker ([p.lat, p.lng] , 200, {color: 'black', color:'black'})
-        circle.addTo(groups[index])                                                                                                                                                                     
-        //console.log(race + "4");
-      }
+      nonWhite++;
+        if (p["Victim's Gender"] == "Male") {
+          nMen++;
+        } else {
+          nWomen++;
+        }
+    }
+      if($.inArray(race, layers) == -1){                  
+         layers.push(race);         
+         groups.push(new L.LayerGroup([]))         
+      } 
 
+      var index = $.inArray(race, layers);      
+      if (p['Hit or Killed?'] == "Killed" ) {        
+        
+        var circle = new L.circleMarker ([p.lat, p.lng], {color:'red', radius:5})
+        circle.addTo(groups[index])
+        
+    } else {
+        
+        var circle = new L.circleMarker ([p.lat, p.lng] ,{color:'black', radius:5})
+        circle.addTo(groups[index])                                                                                                                                                                     
+        
+      }
+    //console.log(white);
+    //console.log(wMen);
     var summary = p.Summary;
-    var link = p['Source Link']; 
-    circle.bindPopup(summary + link);  
+    
+    circle.bindPopup(summary);  
 
     
-
-
-  //L.control.layers(null,layers).addTo(map);
+  
 	// Once layers are on the map, add a leaflet controller that shows/hides layers
   
 })
+//console.log(layers.toString());
+//console.log(groups.toString());
+var layer = {
+    "Unidentified": groups[0]
+  };
 
-L.control.layers (groups).addTo(map) 
+for (i = 1; i < layers.length; i++) {
+  layer[layers[i]] = groups[i]
+}
+
+L.control.layers (null, layer).addTo(map)
+$('white').html("<id='w1' value='wMen' />");
+$('white').html("<input type='text' id='w2' value='wWomen' />");
+$('nonWhite').append("<input type='text' id='table.nonWhite.n1' value='nMen' />");
+$('nonWhite').append("<input type='text' id='n2' value='nWomen' />");
+
 }
 
