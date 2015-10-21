@@ -7,16 +7,16 @@ var map = L.map('container').setView([43,-95],4);
   // Create a tile layer variable using the appropriate url
 var layer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png')
 
-  // Add the layer to your map
+  
 layer.addTo(map) 
 
-  // Execute your function to get data
+  
 getData(map);
 }
-// Function for getting data
+
 var getData = function(map) {
 
-  // Execute an AJAX request to get the data in data/response.js
+  
 var data;
 $.ajax({
      url:'data/response.json',
@@ -24,12 +24,11 @@ $.ajax({
      success:function(dat) {
        data = dat
         customBuild(map,data);
-       // Do something with your data!
+       
      }, 
      dataType:"json"
-}) 
-
-  // When your request is successful, call your customBuild function
+})
+  
 
 }
 
@@ -43,8 +42,10 @@ var customBuild = function(map, data) {
       nonWhite = 0,
       wMen = 0,
       wWomen = 0,
+      wUnspecified = 0,
       nMen = 0,
-      nWomen = 0;
+      nWomen = 0,
+      nUnspecified = 0;
   data.map(function(p){
    
     if (p.Race == undefined || p.Race == "Unknown"){
@@ -57,32 +58,36 @@ var customBuild = function(map, data) {
       white++;
       if (p["Victim's Gender"] == "Male") {
         wMen++;
-      } else {
+      } else if (p["Victim's Gender"] == "Female") {
         wWomen++;
+      } else {
+        wUnspecified++;
       }
     } else {
       nonWhite++;
-        if (p["Victim's Gender"] == "Male") {
+    if (p["Victim's Gender"] == "Male") {
           nMen++;
-        } else {
+        } else if (p["Victim's Gender"] == "Female"){
           nWomen++;
+        } else {
+          nUnspecified++;
         }
     }
       if($.inArray(race, layers) == -1){                  
          layers.push(race);         
-         groups.push(new L.LayerGroup([]))         
+         groups.push(new L.LayerGroup([]));         
       } 
 
       var index = $.inArray(race, layers);      
       if (p['Hit or Killed?'] == "Killed" ) {        
         
-        var circle = new L.circleMarker ([p.lat, p.lng], {color:'red', radius:5})
-        circle.addTo(groups[index])
+        var circle = new L.circleMarker ([p.lat, p.lng], {color:'red', radius:5});
+        circle.addTo(groups[index]);
         
     } else {
         
-        var circle = new L.circleMarker ([p.lat, p.lng] ,{color:'black', radius:5})
-        circle.addTo(groups[index])                                                                                                                                                                     
+        var circle = new L.circleMarker ([p.lat, p.lng] ,{color:'black', radius:5});
+        circle.addTo(groups[index]);                                                                                                                                                                    
         
       }
     //console.log(white);
@@ -96,21 +101,22 @@ var customBuild = function(map, data) {
 	// Once layers are on the map, add a leaflet controller that shows/hides layers
   
 })
-//console.log(layers.toString());
-//console.log(groups.toString());
+
+console.log(nMen);
+
 var layer = {
     "Unidentified": groups[0]
   };
 
 for (i = 1; i < layers.length; i++) {
-  layer[layers[i]] = groups[i]
+  layer[layers[i]] = groups[i];
 }
 
-L.control.layers (null, layer).addTo(map)
-$('white').html("<id='w1' value='wMen' />");
-$('white').html("<input type='text' id='w2' value='wWomen' />");
-$('nonWhite').append("<input type='text' id='table.nonWhite.n1' value='nMen' />");
-$('nonWhite').append("<input type='text' id='n2' value='nWomen' />");
+L.control.layers(null, layer).addTo(map);
 
+$('.table').append("<tr><td></td><td>Men</td><td>Women</td><td>Unspecified</td></tr>");
+$('.table').append("<tr><td>White</td><td>"+wMen+"</td><td>"+wWomen+"</td><td>"+wUnspecified+"</tr>");
+$('.table').append("<tr><td>Non-white</td><td>"+nMen+"</td><td>"+nWomen+"</td><td>"+nUnspecified+"</td></tr>");
 }
+
 
