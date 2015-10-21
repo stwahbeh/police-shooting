@@ -81,12 +81,12 @@ var customBuild = function(map, data) {
       var index = $.inArray(race, layers);      
       if (p['Hit or Killed?'] == "Killed" ) {        
         
-        var circle = new L.circleMarker ([p.lat, p.lng], {color:'red', radius:5});
+        var circle = new L.circleMarker ([p.lat, p.lng], {color:'blue', radius:5});
         circle.addTo(groups[index]);
         
     } else {
         
-        var circle = new L.circleMarker ([p.lat, p.lng] ,{color:'black', radius:5});
+        var circle = new L.circleMarker ([p.lat, p.lng] ,{color:'red', radius:5});
         circle.addTo(groups[index]);                                                                                                                                                                    
         
       }
